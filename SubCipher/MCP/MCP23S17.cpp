@@ -41,6 +41,7 @@
 */
 
 #include <SPI.h>                 // Arduino IDE spi library - uses AVR hardware spi features
+#include "C3SPI/C3SPI.h"
 #include "MCP23S17.h"            // Header files for this class
 
 // Defines to keep logical information symbolic go here
@@ -73,7 +74,7 @@
 
 // Constructor to instantiate an instance of MCP to a specific chip (address)
 
-MCP::MCP(SPIClass& spiClass, uint8_t address, uint8_t ss) :
+MCP::MCP(C3SPI& spiClass, uint8_t address, uint8_t ss) :
 spi(spiClass)
 {
   _address     = constrain(address, 0, 7);
@@ -178,8 +179,7 @@ void MCP::digitalWrite(uint8_t pin, uint8_t value) {
   
   
   if (pin < 1 || pin > 16) return;
-  Serial.print("pin: ");
-  Serial.println(pin);
+
   if (value) {
     _outputCache |= 1 << (pin - 1);
   } else {
@@ -218,6 +218,10 @@ uint8_t MCP::byteRead(uint8_t reg) {        // This function will read a single 
 }
 
 uint8_t MCP::digitalRead(uint8_t pin) {                    // Return a single bit value, supply the necessary bit (1-16)
-    if (pin < 1 | pin > 16) return 0x0;                    // If the pin value is not valid (1-16) return, do nothing and return
+    
+    if (pin < 1 | pin > 16)
+    {
+      return 0x0;                    // If the pin value is not valid (1-16) return, do nothing and return
+    }
     return digitalRead() & (1 << (pin - 1)) ? HIGH : LOW;  // Call the word reading function, extract HIGH/LOW information from the requested pin
 }

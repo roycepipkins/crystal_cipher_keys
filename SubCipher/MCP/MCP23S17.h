@@ -79,10 +79,10 @@
 #define    OLATB     (0x15)      // 1 = Latch High, 0 = Latch Low (default) Reading Returns Latch State, Not Port Value!
 
 #include <Arduino.h>
-class SPIClass;
+class C3SPI;
 class MCP {
   public:
-    MCP(SPIClass& spiClass, uint8_t address, uint8_t ss);                   // Constructor to instantiate a discrete IC as an object, address 0-7, chipSelect any valid pin
+    MCP(C3SPI& spiClass, uint8_t address, uint8_t ss);                   // Constructor to instantiate a discrete IC as an object, address 0-7, chipSelect any valid pin
     void begin();                            // Start the SPI Bus
     void wordWrite(uint8_t, unsigned int);   // Typically only used internally, but allows the user to write any register pair if needed, so it's public
     void byteWrite(uint8_t, uint8_t);        // Typically only used internally, but allows the user to write any register if needed, so it's public
@@ -104,7 +104,7 @@ class MCP {
     unsigned int _pullupCache;               // Caches the internal pull-up configuration of input pins (values persist across mode changes)
     unsigned int _invertCache;               // Caches the input pin inversion selection (values persist across mode changes)
     unsigned int _outputCache;               // Caches the output pin state of pins
-	SPIClass& spi;
+	C3SPI& spi;
  };
 		
 #endif //MCP23S17

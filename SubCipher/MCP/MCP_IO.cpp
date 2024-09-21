@@ -1,12 +1,16 @@
 #include "MCP_IO.h"
 #include <Arduino.h>
+#include "C3SPI/C3SPI.h"
 
 //TODO accept the slave select pin
-MCP_IO::MCP_IO(SPIClass& spiObject, const int slaveSelectPin):
+MCP_IO::MCP_IO(C3SPI& spiObject, const int slaveSelectPin):
 spi(spiObject),
 ss(slaveSelectPin)
 {
-	
+	for(int i = 0; i < 8; ++i)
+	{
+		mcps[i] = nullptr;
+	}
 }
 
 bool MCP_IO::checkPin(const int dwPin)
@@ -18,7 +22,8 @@ bool MCP_IO::checkPin(const int dwPin)
 	if (!mcps[mcp_idx])
 	{
 		mcps[mcp_idx] = new MCP(spi, mcp_idx, ss);
-    if (mcps[mcp_idx] != nullptr) mcps[mcp_idx]->begin();
+		if (mcps[mcp_idx] == nullptr) Serial.println("Error allocating new MCP");
+    	if (mcps[mcp_idx] != nullptr) mcps[mcp_idx]->begin();
 	}
 
 	return mcps[mcp_idx] != nullptr;
